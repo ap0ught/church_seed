@@ -11,6 +11,7 @@ Rails::Initializer.run do |config|
 
   config.gem 'mislav-will_paginate', :version => '~> 2.3.2', :lib => 'will_paginate', 
       :source => 'http://gems.github.com'
+  config.gem 'thoughtbot-factory_girl', :lib => 'factory_girl', :source => 'http://gems.github.com'
 
   config.time_zone = 'UTC'
 
