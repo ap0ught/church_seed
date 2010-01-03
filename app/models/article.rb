@@ -1,10 +1,12 @@
 class Article < ActiveRecord::Base
-  belongs_to :page
-  acts_as_list :scope => :page
   has_many :images
   has_many :documents
-  acts_as_indexed :fields => [:title, :content]
+  belongs_to :page
+
   validates_presence_of :title
+
+  acts_as_list :scope => :page
+  acts_as_indexed :fields => [:title, :content]
   
   # Strip any speech marks and replace with a marker
   def before_save

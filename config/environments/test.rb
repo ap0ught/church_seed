@@ -22,4 +22,5 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 
 config.gem 'thoughtbot-shoulda', :lib => 'shoulda', :source => 'http://gems.github.com'
+config.gem 'seanhussey-woulda', :lib => 'woulda', :source => 'http://gems.github.com'
 config.gem 'mocha'

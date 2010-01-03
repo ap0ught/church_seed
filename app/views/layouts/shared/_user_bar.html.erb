@@ -19,7 +19,7 @@
   	<li class="add-stuff">Add Stuff
   	  <ul class="sub">
   	    <li><%= link_to "#{params[:controller].singularize.capitalize}", :controller => params[:controller], :action => "new" %></li>
-  	    <li><%= link_to "Component", new_component_path, :title => "Add a component to this page" %></li>
+  	    <li><%= link_to "Component", new_component_path(:page_id => @page.id), :title => "Add a component to this page" %></li>
   	    <% if current_user.has_role?("admin") %>
   	    <li><%= link_to "New Page", new_page_path, :title => "Create a new Page" %></li>
   	    <% end -%>

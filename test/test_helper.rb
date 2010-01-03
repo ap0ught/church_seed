@@ -4,7 +4,7 @@ require 'test_help'
 require 'redgreen'
 
 class Test::Unit::TestCase
-  # RoleRequirementTestHelper must be included to test RoleRequirement
+  include AuthenticatedTestHelper
   include RoleRequirementTestHelper
 
   # Transactional fixtures accelerate your tests by wrapping each test method
