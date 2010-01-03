@@ -6,6 +6,7 @@ require "#{woulda_dir}/should_raise"
 # Macros for gems and plugins
 require "#{woulda_dir}/acts_as_ferret" if defined? ActsAsFerret
 require "#{woulda_dir}/acts_as_list" if defined? ActiveRecord::Acts::List
+require "#{woulda_dir}/acts_as_tree" if defined? ActiveRecord::Acts::Tree
 require "#{woulda_dir}/acts_as_paranoid" if defined? Caboose::Acts::Paranoid
 require "#{woulda_dir}/acts_as_taggable_on_steroids" if defined? ActiveRecord::Acts::Taggable
 require "#{woulda_dir}/attachment_fu" if defined? Technoweenie::AttachmentFu
