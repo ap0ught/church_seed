@@ -1,5 +1,4 @@
 class PagesController < ApplicationController
-
   before_filter :login_required, :except => [:show]
   cache_sweeper :page_sweeper, :only => [:create, :update, :destroy]
   require_role "admin", :except => [:show]
@@ -7,8 +6,7 @@ class PagesController < ApplicationController
   def index
     @viewable = Role.pages_for_viewable_by
     @editable = Role.pages_for_editable_by
-    @parents = ['parent_0', 'parent_00']
-    Page.all_parents.each { |p| @parents << "parent_#{p.parent_id}"}
+    @parents = ['parent_0', 'parent_00'] + Page.all_parents.map{|p| "parent_#{p.parent_id}"}
   end
 
   def new
