@@ -11,7 +11,7 @@ class Comment < ActiveRecord::Base
     {:limit => limit, :conditions => conditions, :order => 'created_at DESC'}
   }
 
-   def request=(request)
+  def request=(request)
     self.user_ip = request.remote_ip
     self.user_agent = request.env['HTTP_USER_AGENT']
     self.referrer = request.env['HTTP_REFERER']
