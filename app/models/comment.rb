@@ -5,12 +5,13 @@ class Comment < ActiveRecord::Base
   
   named_scope :approved, :conditions => ["approved = ?", true]
   named_scope :unapproved, :conditions => ["approved = ?", false]
-  
-  def self.recent(limit, conditions=nil)
-    find(:all, :limit => limit, :conditions => conditions, :order => 'created_at DESC')
-  end
-  
-  def request=(request)
+  named_scope :recent, lambda{|*args|
+    limit = args.shift || 11
+    conditions = args.shift
+    {:limit => limit, :conditions => conditions, :order => 'created_at DESC'}
+  }
+
+   def request=(request)
     self.user_ip = request.remote_ip
     self.user_agent = request.env['HTTP_USER_AGENT']
     self.referrer = request.env['HTTP_REFERER']
