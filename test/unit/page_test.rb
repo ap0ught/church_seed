@@ -15,7 +15,7 @@ class PageTest < ActiveSupport::TestCase
   should_have_named_scope :pages_menu, lambda{|*args| {:conditions => {:parent_id => nil, :menu_type => (args.first || 'primary')}, :include => :children, :order => 'position'} }
   should_have_named_scope :all_parents, :select => 'parent_id', :conditions => 'parent_id is not null', :group => 'parent_id'
   should_have_named_scope :siblings_of, lambda{|*args| {:conditions => {:parent_id => (args.first && args.first.is_a?(Page) ? args.first.parent_id : nil)}, :order => 'position' } }
-  should_have_named_scope :all_pages_for_dropdown, lambda{|*args| {:id => (args.first || nil), :parent_id => nil} }
+  should_have_named_scope :all_pages_for_dropdown, lambda{|*args| {:conditions => {:id => (args.first || nil), :parent_id => nil} } }
 
   should_have_callback :before_destroy, :dont_delete_home_page
   

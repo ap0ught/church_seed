@@ -13,7 +13,7 @@ class Page < ActiveRecord::Base
   named_scope :pages_menu, lambda{|*args| {:conditions => {:parent_id => nil, :menu_type => (args.first || 'primary')}, :include => :children, :order => 'position'} }
   named_scope :all_parents, :select => 'parent_id', :conditions => 'parent_id is not null', :group => 'parent_id'
   named_scope :siblings_of, lambda{|*args| {:conditions => {:parent_id => (args.first && args.first.is_a?(Page) ? args.first.parent_id : nil)}, :order => 'position' } }
-  named_scope :all_pages_for_dropdown, lambda{|*args| {:id => (args.first || nil), :parent_id => nil} }
+  named_scope :all_pages_for_dropdown, lambda{|*args| {:conditions => {:id => (args.first || nil), :parent_id => nil} } }
 
   before_destroy :dont_delete_home_page
   
