@@ -1,3 +1,16 @@
+def actify(test)
+  case test
+    when :index   then "get :index"
+    when :show    then "get :show"
+    when :new     then "get :new"
+    when :create  then "post :create"
+    when :edit    then "get :edit"
+    when :update  then "put :update"
+    when :destroy then "delete :destroy"
+    else test
+  end
+end
+
 def should_require_login
   should_require_login_for :all
 end
@@ -8,16 +21,7 @@ def should_require_login_for(*tests)
   tests = [:index, :show, :new, :create, :edit, :update, :destroy] if tests.include?(:all)
   
   tests.each do |test|
-    action = case test
-      when :index   then "get :index"
-      when :show    then "get :show"
-      when :new     then "get :new"
-      when :create  then "post :create"
-      when :edit    then "get :edit"
-      when :update  then "put :update"
-      when :destroy then "delete :destroy"
-      else test
-    end
+    action = actify(test)
   
     context "attempting to #{action}" do
       setup do
@@ -41,16 +45,7 @@ def should_not_authorize_for(*tests)
   tests = [:index, :show, :new, :create, :edit, :update, :destroy] if tests.include?(:all)
   
   tests.each do |test|
-    action = case test
-      when :index   then "get :index"
-      when :show    then "get :show"
-      when :new     then "get :new"
-      when :create  then "post :create"
-      when :edit    then "get :edit"
-      when :update  then "put :update"
-      when :destroy then "delete :destroy"
-      else test
-    end
+    action = actify(test)
   
     context "attempting to #{action}" do
       setup do
