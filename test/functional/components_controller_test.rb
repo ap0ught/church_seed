@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class ComponentsControllerTest < ActionController::TestCase
-  context "as admin" do
+def should_pass_logged_in_as(title, user)
+  context "as #{title}" do
     setup do
       @page = Factory.build(:page, :parent_id => 1002, :kind => "articles")
       @page.id = 1001
@@ -11,7 +11,7 @@ class ComponentsControllerTest < ActionController::TestCase
       @component = Component.new(:title => 'Title')
       Component.stubs(:find).returns(@component)
       
-      login_as :admin
+      login_as user
     end
     
     context "getting new" do
@@ -134,5 +134,14 @@ class ComponentsControllerTest < ActionController::TestCase
       should_redirect_to('articles page'){ {:controller => 'articles'} }
       should_not_set_the_flash
     end
+  end
+end
+
+class ComponentsControllerTest < ActionController::TestCase
+  should_pass_logged_in_as('admin', :admin)
+  should_pass_logged_in_as('a member', :quentin)
+
+  context "as a visitor" do
+    should_require_login
   end
 end
