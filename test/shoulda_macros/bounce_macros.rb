@@ -7,7 +7,7 @@ def actify(test)
     when :edit    then "get :edit"
     when :update  then "put :update"
     when :destroy then "delete :destroy"
-    else test
+    else (test.is_a?(Symbol) ? "get :#{test}" : test)
   end
 end
 
@@ -16,7 +16,9 @@ def should_require_login
 end
 
 def should_require_login_for(*tests)
-  model = test_unit_class.name.gsub(/ControllerTest$/, '').singularize.constantize
+  model = self.methods.include?('test_unit_class') ?
+    test_unit_class.name.gsub(/ControllerTest$/, '').singularize.constantize :
+    nil
   
   tests = [:index, :show, :new, :create, :edit, :update, :destroy] if tests.include?(:all)
   
@@ -28,7 +30,7 @@ def should_require_login_for(*tests)
         eval action
       end
     
-      should_not_assign_to model.name.to_sym
+      should_not_assign_to model.name.to_sym if model
       should_redirect_to("login"){new_session_path}
       should_not_set_the_flash
     end
