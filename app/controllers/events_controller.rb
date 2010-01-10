@@ -12,8 +12,8 @@ class EventsController < ApplicationController
   before_filter :check_edit_rights, :only => [:new, :edit]
   
   def index
-    @month = (params[:month]) ? params[:month].to_i : DateTime.now.month
-    @year = (params[:year]) ? params[:year].to_i : DateTime.now.year
+    @month = (params[:month]) ? params[:month].to_i : Date.today.month
+    @year = (params[:year]) ? params[:year].to_i : Date.today.year
     @events = Event.current_month_events(@year, @month, @page)
   end
   
@@ -23,8 +23,8 @@ class EventsController < ApplicationController
   
   # Redirect to browse url
   def show
-    event = Event.find(params[:id])
-    redirect_to browse_url(@page, event.date.month, event.date.year)
+    @event = Event.find(params[:id])
+    redirect_to browse_url(@page, @event.date.month, @event.date.year)
   end
   
   def create
