@@ -1,76 +1,73 @@
 require 'test_helper'
 
 class ImagesControllerTest < ActionController::TestCase
-  include AuthenticatedTestHelper
+  class << self
+    def should_act_as_logged_in(type, user)
+      context "as #{type}" do
+        setup do
+          @image = Image.new(:thumbnail => 'thumb100', :width => 100, :height => 100, :size => 100, :filename => 'test.jpg', :content_type => 'image/jpg')
+          Image.stubs(:find).returns(@image)
+          
+          login_as user
+        end
+        
+        context "getting new" do
+          setup do
+            get :new
+          end
+          
+          should_assign_to :image, :class => Image
+          should_respond_with :success
+          should_render_without_layout
+          should_render_template :new
+          should_not_set_the_flash
+        end
+      
+        context "posting create" do
+          setup do
+            Image.any_instance.stubs(:public_filename).returns('')
+            Image.any_instance.expects(:save).returns(true)
+            post :create, :image => {}
+          end
+          
+          should_assign_to :image, :class => Image
+          should_respond_with :success
+          should_render_without_layout
+          should_render_template '_image_item'
+          should_not_set_the_flash
+        end
+        
+        context "destroying" do
+          setup do
+            @image.stubs(:destroy).once
+            delete :destroy, :id => 1001
+          end
+          
+          should_assign_to(:image){@image}
+          should_redirect_to("new"){new_image_path}
+          should_not_set_the_flash
+        end
+      end
+    end
+    
+    def should_require_login_for(*actions)
+      actions.each do |action|
+        context "attempting to #{action}" do
+          setup do
+            eval action
+          end
+          
+          should_not_assign_to :image
+          should_redirect_to("login"){new_session_path}
+          should_not_set_the_flash
+        end
+      end
+    end
+  end
   
-  def setup
-    @valid = {:size => 1, :content_type => 'image/jpeg', :filename => 'test.jpg'}
-  end
+  should_act_as_logged_in('admin', :admin)
   
-  def test_as_admin_getting_new_should_succeed
-    login_as(:admin)
-    get :new
-    assert_response :success
-  end
-
-  def test_as_member_getting_new_should_succeed
-    login_as(:quentin)
-    get :new
-    assert_response :success
-  end
-
-  def test_as_visitor_getting_new_should_be_redirected_to_login
-    get :new
-    assert_redirected_to new_session_path
-  end
-
-  def test_as_admin_creating_images_should_succeed
-    login_as :admin
-    
-    assert_difference('Image.count') do
-      post :create, :image => @valid
-    end
-
-    assert_response :success
-  end
-
-  def test_as_member_creating_images_should_succeed
-    login_as :quentin
-    
-    assert_difference('Image.count') do
-      post :create, :image => @valid
-    end
-
-    assert_response :success
-  end
-
-  def test_as_visitor_creating_images_should_be_redirected_to_login
-    post :create, :image => {}
-    assert_redirected_to new_session_path
-  end
-
-  def test_as_admin_destroying_image_should_succeed
-    login_as :admin
-    
-    assert_difference('Image.count', -1) do
-      delete :destroy, :id => images(:one).id
-    end
-
-    assert_redirected_to new_image_path
-  end
-
-  def test_as_member_destroying_image_should_succeed
-    login_as :quentin
-    
-    assert_difference('Image.count', -1) do
-      delete :destroy, :id => images(:one).id
-    end
-
-    assert_redirected_to new_image_path
-  end
-
-  def test_as_visitor_destroying_image_should_be_redirected_to_login
-    delete :destroy, :id => 1
-    assert_redirected_to new_session_path
+  context "as a visitor" do
+    should_require_login_for 'get :new', 'post :create', 'delete :destroy'
   end
 end
