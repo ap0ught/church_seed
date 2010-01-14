@@ -18,12 +18,13 @@ class PasswordsController < ApplicationController
   end
 
   def reset
-    begin
-      @user = Password.find(:first, :conditions => ['reset_code = ? and expiration_date > ?', params[:reset_code], Time.now]).user
-    rescue
+    @password = Password.find(:first, :conditions => ['reset_code = ? and expiration_date > ?', params[:reset_code], Time.now])
+    @user = @password.user if @password
+    
+    unless @password && @user
       flash[:notice] = 'The change password URL you visited is either invalid or expired.'
       redirect_to new_password_path
-    end    
+    end      
   end
 
   def update_after_forgetting
@@ -37,16 +38,4 @@ class PasswordsController < ApplicationController
       redirect_to :action => :reset, :reset_code => params[:reset_code]
     end
   end
-  
-  def update
-    @password = Password.find(params[:id])
-
-    if @password.update_attributes(params[:password])
-      flash[:notice] = 'Password was successfully updated.'
-      redirect_to(@password)
-    else
-      render :action => :edit
-    end
-  end
-
 end
